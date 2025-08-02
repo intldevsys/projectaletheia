@@ -1,9 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Aletheia Project Development Chat</title>
+    
+    <!-- Include the configuration file -->
+    <script src="../chat-config.js"></script>
+    
     <style>
         body {
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
@@ -12,6 +17,32 @@
             background-color: #1a1a1a;
             color: #e0e0e0;
         }
+        
+        /* ADD THIS NEW CSS FOR THE NAVIGATION BUTTON */
+        .nav-home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        .nav-home-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            text-decoration: none;
+            color: white;
+        }
+        /* END NEW CSS */
         
         .chat-container {
             width: 1280px;
@@ -163,6 +194,9 @@
     </style>
 </head>
 <body>
+    <!-- ADD THIS NAVIGATION BUTTON -->
+    <a href="../index.html" class="nav-home-btn">← All Sessions</a>
+    
     <div class="chat-container">
         <div class="chat-header">
           Project Aletheia  Development Chat - Full AI Collaboration Session
@@ -181,6 +215,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         const chatMessages = [
