@@ -16,7 +16,7 @@ const chatConfig = {
         {
             id: "aletheia-development",
             title: "Complete Aletheia Project Development Chat",
-            filename: "aletheia-development.html", // ✓ Matches your file
+            filename: "aletheia-development.html", // ✓
             date: "2025-08-03",
             estimatedMessages: 100,
             description: "Complete development discussion for the Aletheia truth verification system"
@@ -40,7 +40,7 @@ const chatConfig = {
         {
             id: "prompt-injection",
             title: "Prompt Injection Prevention Discussion",
-            filename: "prompt-injection.html", // ✓ Matches your file
+            filename: "prompt-injection.html", // ✓ 
             date: "2025-08-03",
             estimatedMessages: 22,
             description: "Deep dive into prompt injection vulnerabilities and prevention strategies"
@@ -48,7 +48,7 @@ const chatConfig = {
         {
             id: "red-team",
             title: "Red Team Security Analysis",
-            filename: "red-team.html", // ✓ Matches your file
+            filename: "red-team.html", // ✓ 
             date: "2025-08-03",
             estimatedMessages: 22,
             description: "Collaborative red team security analysis with multiple participants"
@@ -56,7 +56,7 @@ const chatConfig = {
         {
             id: "salty-vibes",
             title: "Salty Vibes Discussion",
-            filename: "salty-vibes.html", // ✓ Matches your file
+            filename: "salty-vibes.html", // ✓ 
             date: "2025-08-02",
             estimatedMessages: 15,
             description: "Creative discussion session with interesting perspectives"
@@ -64,7 +64,7 @@ const chatConfig = {
         {
             id: "shorthand",
             title: "AI Shorthand Development Discussion",
-            filename: "shorthand.html", // ✓ Matches your file
+            filename: "shorthand.html", // ✓
             date: "2025-08-02",
             estimatedMessages: 31,
             description: "Development of an AI-powered shorthand system for rapid text input"
@@ -72,7 +72,7 @@ const chatConfig = {
         {
             id: "star-trek-larp",
             title: "Star Trek LARP Session",
-            filename: "star-trek-larp.html", // ✓ Matches your file
+            filename: "star-trek-larp.html", // ✓ 
             date: "2025-08-02",
             estimatedMessages: 40,
             description: "Creative Star Trek live-action roleplay session exploring sci-fi scenarios"
@@ -116,6 +116,6 @@ window.chatConfig = chatConfig;
 window.ChatConfigHelpers = ChatConfigHelpers;
 
 // Auto-run validation in console
-console.log('Chat Navigator Config Loaded');
-console.log(`Found ${chatConfig.sessions.length} sessions configured`);
-ChatConfigHelpers.validateFileNames();
+//console.log('Chat Navigator Config Loaded');
+//console.log(`Found ${chatConfig.sessions.length} sessions configured`);
+//ChatConfigHelpers.validateFileNames();
