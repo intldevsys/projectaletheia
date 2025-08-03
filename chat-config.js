@@ -3,7 +3,7 @@ const chatConfig = {
     // GitHub Pages configuration
     baseUrl: './',
     
-    // Session categories
+    // Session categories (kept for potential future use)
     categories: {
         'Development': {
             color: '#667eea',
@@ -53,58 +53,63 @@ const chatConfig = {
             status: 'completed',
             filename: 'red-team.html',
             estimatedMessages: 22
-        }
-,\n        {
+        },
+        {
             id: 'star-trek-larp',
             title: 'Star Trek Roleplay Session',
-            description: 'Chat session with 6 participants',
+            description: 'Creative roleplay session with Star Trek characters',
             category: 'Security',
             participants: ['NOTE', 'Quark', 'Query', 'Acknowledging', 'Thomas', 'Gemma'],
             date: '2025-08-02',
             status: 'completed',
             filename: 'star-trek-larp.html',
             estimatedMessages: 40
-        },\n        {
+        },
+        {
             id: 'hidden-function',
             title: 'Hidden Function Development',
-            description: 'Chat session with 3 participants',
+            description: 'Discussion on creating hidden programming functions',
             category: 'Security',
             participants: ['User1', 'User2', 'User3'],
             date: '2025-08-02',
             status: 'completed',
             filename: 'hidden-function.html',
             estimatedMessages: 5
-        },\n        {
+        },
+        {
             id: 'shorthand',
             title: 'AI Shorthand Development Discussion',
-            description: 'Chat session with 15 participants',
+            description: 'Development of compressed AI communication methods',
             category: 'Security',
             participants: ['User2', 'USER2', 'Improvements', 'Proposed', 'Deconstruction', 'Example', 'ser1', 'User1', 'Decomposition', 'User3', 'EPITAPH', 'Tradeoff', 'USER1', 'Vote', 'Introduce'],
             date: '2025-08-02',
             status: 'completed',
             filename: 'shorthand.html',
             estimatedMessages: 31
-        },\n        {
+        },
+        {
             id: 'salty-vibes',
             title: 'Philosophical Discussion',
-            description: 'Chat session with 4 participants',
+            description: 'Casual philosophical conversation and musings',
             category: 'Development',
             participants: ['Alternatively', 'User1', 'User2', 'User3'],
             date: '2025-08-02',
             status: 'completed',
             filename: 'salty-vibes.html',
             estimatedMessages: 16
-        },\n        {
+        },
+        {
             id: 'dcc',
             title: 'DCC Technical Implementation',
-            description: 'Chat session with 3 participants',
+            description: 'Technical discussion on DCC implementation',
             category: 'Development',
             participants: ['User1', 'User2', 'User3'],
             date: '2025-08-02',
             status: 'completed',
             filename: 'dcc.html',
             estimatedMessages: 6
-        }\n    ]
+        }
+    ]
 };
 
 // Export for module use or direct script inclusion
