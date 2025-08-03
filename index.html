@@ -46,6 +46,27 @@
             font-size: 18px;
         }
 
+        .validation-status {
+            padding: 10px 20px;
+            font-size: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        .validation-status.checking {
+            background-color: #2d4a6d;
+            color: #87ceeb;
+        }
+
+        .validation-status.complete {
+            background-color: #2d4a2d;
+            color: #90ee90;
+        }
+
+        .validation-status.error {
+            background-color: #4a2d2d;
+            color: #ff6b6b;
+        }
+
         .session-item {
             padding: 15px 20px;
             border-bottom: 1px solid #333;
@@ -54,7 +75,18 @@
             position: relative;
         }
 
-        .session-item:hover {
+        .session-item.unavailable {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #2a1a1a;
+        }
+
+        .session-item.unavailable:hover {
+            background-color: #2a1a1a;
+            transform: none;
+        }
+
+        .session-item:not(.unavailable):hover {
             background: rgba(255, 255, 255, 0.05);
             transform: translateX(5px);
         }
@@ -73,6 +105,29 @@
         .session-meta {
             font-size: 11px;
             opacity: 0.7;
+        }
+
+        .session-status {
+            font-size: 10px;
+            margin-top: 2px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .session-status.available {
+            background-color: #2d4a2d;
+            color: #90ee90;
+        }
+
+        .session-status.missing {
+            background-color: #4a2d2d;
+            color: #ff6b6b;
+        }
+
+        .session-status.checking {
+            background-color: #2d4a6d;
+            color: #87ceeb;
         }
 
         /* Main Content */
@@ -110,6 +165,27 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
+        .validate-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .validate-button:hover {
+            background: #45a049;
+        }
+
+        .validate-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
         .breadcrumb {
             color: #999;
             font-size: 14px;
@@ -123,23 +199,12 @@
             background: #1a1a1a;
         }
 
-        /* Mobile-friendly iframe styles */
         .chat-iframe {
             width: 100%;
             height: calc(100vh - 120px);
             border: none;
             border-radius: 8px;
             background: white;
-        }
-
-        /* Mobile responsive iframe content */
-        .chat-iframe-wrapper {
-            width: 100%;
-            height: calc(100vh - 120px);
-            border-radius: 8px;
-            overflow: hidden;
-            background: white;
-            position: relative;
         }
 
         .welcome-screen {
@@ -188,50 +253,26 @@
             color: #ff6b6b;
         }
 
-        .direct-link-screen {
+        .file-not-found-screen {
             text-align: center;
             padding: 40px 20px;
-            color: #e0e0e0;
+            color: #ff6b6b;
         }
 
-        .direct-link-screen h2 {
+        .file-not-found-screen h3 {
             margin-bottom: 20px;
-            color: #e0e0e0;
-            font-size: 20px;
+            color: #ff6b6b;
         }
 
-        .chat-link-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            margin: 10px;
-        }
-
-        .chat-link-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-
-        .back-button {
-            background: #444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
+        .file-not-found-screen .help-text {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: monospace;
             font-size: 12px;
-            margin-left: auto;
-        }
-
-        .back-button:hover {
-            background: #555;
+            color: #e0e0e0;
         }
 
         /* Mobile Responsive */
@@ -271,29 +312,8 @@
             .chat-iframe {
                 height: calc(100vh - 100px);
             }
-
-            .chat-iframe-wrapper {
-                height: calc(100vh - 100px);
-            }
-
-            .welcome-screen {
-                padding: 30px 15px;
-            }
-
-            .welcome-screen h2 {
-                font-size: 20px;
-            }
-
-            .session-title {
-                font-size: 13px;
-            }
-
-            .session-meta {
-                font-size: 10px;
-            }
         }
 
-        /* Mobile overlay when sidebar is open */
         .overlay {
             display: none;
             position: fixed;
@@ -310,16 +330,6 @@
                 display: block;
             }
         }
-
-        /* Responsive iframe styles for better mobile chat viewing */
-        @media (max-width: 768px) {
-            .chat-iframe {
-                transform: scale(0.9);
-                transform-origin: top left;
-                width: 111.11%;
-                height: calc(100vh - 90px);
-            }
-        }
     </style>
 </head>
 <body>
@@ -330,6 +340,9 @@
             <div class="sidebar-header">
                 Chat Sessions Navigator
             </div>
+            <div class="validation-status" id="validationStatus">
+                Click "Validate Files" to check session availability
+            </div>
             <div id="sessionsContainer">
                 <!-- Sessions will be populated by JavaScript -->
             </div>
@@ -339,14 +352,14 @@
             <div class="content-header">
                 <button class="sidebar-toggle" id="sidebarToggle">☰ Sessions</button>
                 <div class="breadcrumb" id="breadcrumb">Select a chat session to view</div>
-                <button class="back-button" id="backButton" style="display: none;">← Back to Navigator</button>
+                <button class="validate-button" id="validateButton">Validate Files</button>
             </div>
 
             <div class="chat-viewer" id="chatViewer">
                 <div class="welcome-screen" id="welcomeScreen">
                     <h2>Welcome to Chat Sessions Navigator</h2>
                     <p>Select a chat session from the sidebar to begin viewing the conversation.</p>
-                    <p>Use the sidebar to browse through different categories and sessions.</p>
+                    <p><strong>Tip:</strong> Click "Validate Files" to check which sessions have available files.</p>
                     <p><strong>Mobile tip:</strong> Sessions will open in a new tab for better readability on small screens.</p>
                 </div>
 
@@ -364,8 +377,13 @@
     </div>
 
     <script>
-        // Mock chat config for demonstration
+        // Basic chat config - update this with your actual files
         const chatConfig = {
+            settings: {
+                mobileOpenInNewTab: true,
+                mobileBreakpoint: 768,
+                iframeTimeout: 5000
+            },
             sessions: [
                 {
                     id: "aletheia-dev",
@@ -431,38 +449,35 @@
                 this.currentSession = null;
                 this.sidebarCollapsed = window.innerWidth <= 768;
                 this.isMobile = window.innerWidth <= 768;
+                this.validationResults = new Map();
                 this.init();
             }
 
             init() {
                 console.log('Initializing ChatNavigator...');
-                
                 this.setupEventListeners();
                 this.renderSessions();
                 this.updateSidebarState();
                 this.handleHashChange();
                 
-                // Listen for hash changes (browser back/forward)
                 window.addEventListener('hashchange', () => this.handleHashChange());
             }
 
             setupEventListeners() {
                 const sidebarToggle = document.getElementById('sidebarToggle');
                 const overlay = document.getElementById('overlay');
-                const backButton = document.getElementById('backButton');
+                const validateButton = document.getElementById('validateButton');
                 
                 sidebarToggle.addEventListener('click', () => this.toggleSidebar());
                 overlay.addEventListener('click', () => this.closeSidebar());
-                backButton.addEventListener('click', () => this.showWelcomeScreen());
+                validateButton.addEventListener('click', () => this.validateAllSessions());
 
-                // Close sidebar on escape key
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && !this.sidebarCollapsed) {
                         this.closeSidebar();
                     }
                 });
 
-                // Handle window resize
                 window.addEventListener('resize', () => {
                     this.isMobile = window.innerWidth <= 768;
                     if (window.innerWidth > 768 && this.sidebarCollapsed) {
@@ -470,6 +485,66 @@
                         this.updateSidebarState();
                     }
                 });
+            }
+
+            async validateAllSessions() {
+                const validateButton = document.getElementById('validateButton');
+                const statusDiv = document.getElementById('validationStatus');
+                
+                validateButton.disabled = true;
+                validateButton.textContent = 'Validating...';
+                statusDiv.className = 'validation-status checking';
+                statusDiv.textContent = 'Checking file availability...';
+
+                let availableCount = 0;
+                let totalCount = chatConfig.sessions.length;
+
+                for (const session of chatConfig.sessions) {
+                    const isAvailable = await this.checkFileExists(session.filename);
+                    this.validationResults.set(session.id, isAvailable);
+                    if (isAvailable) availableCount++;
+                    
+                    // Update session display immediately
+                    this.updateSessionStatus(session.id, isAvailable);
+                }
+
+                statusDiv.className = 'validation-status complete';
+                statusDiv.textContent = `Validation complete: ${availableCount}/${totalCount} sessions available`;
+                
+                validateButton.disabled = false;
+                validateButton.textContent = 'Re-validate Files';
+            }
+
+            async checkFileExists(filename) {
+                try {
+                    const response = await fetch(`chats/${filename}`, { method: 'HEAD' });
+                    return response.ok;
+                } catch (error) {
+                    console.log(`File check failed for ${filename}:`, error);
+                    return false;
+                }
+            }
+
+            updateSessionStatus(sessionId, isAvailable) {
+                const sessionElement = document.querySelector(`[data-session-id="${sessionId}"]`);
+                if (!sessionElement) return;
+
+                const existingStatus = sessionElement.querySelector('.session-status');
+                if (existingStatus) {
+                    existingStatus.remove();
+                }
+
+                const statusSpan = document.createElement('div');
+                statusSpan.className = `session-status ${isAvailable ? 'available' : 'missing'}`;
+                statusSpan.textContent = isAvailable ? '✓ Available' : '✗ Missing';
+                
+                sessionElement.appendChild(statusSpan);
+                
+                if (!isAvailable) {
+                    sessionElement.classList.add('unavailable');
+                } else {
+                    sessionElement.classList.remove('unavailable');
+                }
             }
 
             toggleSidebar() {
@@ -500,11 +575,9 @@
             }
 
             renderSessions() {
-                console.log('Rendering sessions...');
                 const container = document.getElementById('sessionsContainer');
                 const sessions = chatConfig.sessions;
 
-                console.log('Found', sessions.length, 'sessions');
                 container.innerHTML = '';
 
                 if (sessions.length === 0) {
@@ -512,8 +585,7 @@
                     return;
                 }
 
-                sessions.forEach((session, index) => {
-                    console.log(`Rendering session ${index + 1}:`, session.title);
+                sessions.forEach((session) => {
                     const sessionDiv = document.createElement('div');
                     sessionDiv.className = 'session-item';
                     sessionDiv.dataset.sessionId = session.id;
@@ -525,8 +597,6 @@
                     sessionDiv.addEventListener('click', () => this.loadSession(session));
                     container.appendChild(sessionDiv);
                 });
-                
-                console.log('Finished rendering sessions');
             }
 
             handleHashChange() {
@@ -538,25 +608,27 @@
                     }
                 } else {
                     this.showWelcomeScreen();
-                    this.currentSession = null;
-                    this.updateActiveSession(null);
                 }
             }
 
             loadSession(session) {
+                // Check if session is known to be unavailable
+                const isAvailable = this.validationResults.get(session.id);
+                if (isAvailable === false) {
+                    this.showFileNotFoundScreen(session);
+                    return;
+                }
+
                 this.currentSession = session;
                 this.updateActiveSession(session.id);
                 this.updateBreadcrumb(session);
                 
-                // Update URL hash
                 window.location.hash = session.id;
                 
-                // Close sidebar on mobile after selection
                 if (window.innerWidth <= 768) {
                     this.closeSidebar();
                 }
 
-                // For mobile devices, open in new tab for better readability
                 if (this.isMobile) {
                     this.openInNewTab(session);
                 } else {
@@ -564,11 +636,42 @@
                 }
             }
 
+            showFileNotFoundScreen(session) {
+                this.hideAllScreens();
+                const chatViewer = document.getElementById('chatViewer');
+                
+                chatViewer.innerHTML = `
+                    <div class="file-not-found-screen">
+                        <h3>File Not Found: ${session.title}</h3>
+                        <p>The file <code>chats/${session.filename}</code> does not exist.</p>
+                        
+                        <div class="help-text">
+                            <strong>To fix this:</strong><br>
+                            1. Create the file <code>chats/${session.filename}</code> in your repository<br>
+                            2. Or remove this session from your <code>chat-config.js</code><br>
+                            3. Or update the filename in your configuration<br><br>
+                            
+                            <strong>Example file structure:</strong><br>
+                            your-repo/<br>
+                            ├── index.html<br>
+                            ├── chat-config.js<br>
+                            └── chats/<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;├── ${session.filename}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;└── other-sessions.html
+                        </div>
+                        
+                        <button onclick="window.chatNavigator.showWelcomeScreen()" 
+                                style="background: #667eea; color: white; border: none; padding: 8px 16px; 
+                                       border-radius: 4px; cursor: pointer; margin-top: 20px;">
+                            ← Back to Sessions
+                        </button>
+                    </div>
+                `;
+            }
+
             openInNewTab(session) {
                 const sessionUrl = `chats/${session.filename}`;
                 window.open(sessionUrl, '_blank');
-                
-                // Show a confirmation message
                 this.showDirectLinkScreen(session, true);
             }
 
@@ -592,9 +695,7 @@
 
             updateBreadcrumb(session) {
                 const breadcrumb = document.getElementById('breadcrumb');
-                const backButton = document.getElementById('backButton');
                 breadcrumb.textContent = session.title;
-                backButton.style.display = 'block';
             }
 
             showLoadingScreen() {
@@ -604,8 +705,6 @@
 
             showErrorScreen(message) {
                 this.hideAllScreens();
-                const backButton = document.getElementById('backButton');
-                backButton.style.display = 'block';
                 document.getElementById('errorMessage').textContent = message;
                 document.getElementById('errorScreen').style.display = 'block';
             }
@@ -613,12 +712,9 @@
             showWelcomeScreen() {
                 this.hideAllScreens();
                 const breadcrumb = document.getElementById('breadcrumb');
-                const backButton = document.getElementById('backButton');
                 breadcrumb.textContent = 'Select a chat session to view';
-                backButton.style.display = 'none';
                 document.getElementById('welcomeScreen').style.display = 'block';
                 
-                // Clear hash
                 if (window.location.hash) {
                     history.replaceState(null, null, window.location.pathname);
                 }
@@ -630,23 +726,18 @@
                 const sessionUrl = `chats/${session.filename}`;
                 
                 chatViewer.innerHTML = `
-                    <div class="direct-link-screen">
+                    <div style="text-align: center; padding: 40px 20px; color: #e0e0e0;">
                         <h2>${session.title}</h2>
                         ${isNewTab ? 
-                            '<p style="margin: 20px 0; color: #4CAF50;">✓ Chat session opened in new tab for better mobile viewing</p>' :
-                            '<p style="margin: 20px 0; color: #999;">Click the button below to open this chat session:</p>'
+                            '<p style="margin: 20px 0; color: #4CAF50;">✓ Chat session opened in new tab</p>' :
+                            '<p style="margin: 20px 0; color: #999;">Opening chat session...</p>'
                         }
-                        <div>
-                            <a href="${sessionUrl}" target="_blank" class="chat-link-button">
-                                ${isNewTab ? 'Open Again' : 'Open'} ${session.title}
-                            </a>
-                        </div>
-                        <p style="margin-top: 20px; font-size: 12px; color: #666; line-height: 1.4;">
-                            ${isNewTab ? 
-                                'The session opened in a new tab for optimal mobile viewing. You can return to this navigator anytime.' :
-                                'The session will open in a new tab. Use your browser\'s tab switcher to navigate between this navigator and the chat session.'
-                            }
-                        </p>
+                        <a href="${sessionUrl}" target="_blank" 
+                           style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                  color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; 
+                                  font-family: inherit; font-size: 14px; margin: 10px;">
+                            ${isNewTab ? 'Open Again' : 'Open'} ${session.title}
+                        </a>
                     </div>
                 `;
             }
@@ -656,115 +747,49 @@
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('errorScreen').style.display = 'none';
                 
-                // Clear any existing iframe content
                 const chatViewer = document.getElementById('chatViewer');
                 const existingIframes = chatViewer.querySelectorAll('iframe');
                 existingIframes.forEach(iframe => iframe.remove());
             }
 
             async loadHTMLFile(session) {
-                console.log('Loading session:', session.filename);
-                
                 try {
                     const sessionUrl = `chats/${session.filename}`;
                     
-                    // Clear previous content first
                     this.hideAllScreens();
                     const chatViewer = document.getElementById('chatViewer');
-                    
-                    // Create a clean iframe container
-                    const iframeWrapper = document.createElement('div');
-                    iframeWrapper.className = 'chat-iframe-wrapper';
                     
                     const iframe = document.createElement('iframe');
                     iframe.className = 'chat-iframe';
                     iframe.src = sessionUrl;
                     iframe.title = session.title;
                     
-                    // Set up proper iframe attributes for better mobile support
-                    iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
-                    iframe.setAttribute('loading', 'lazy');
-                    
                     let loadTimeout = setTimeout(() => {
-                        console.log('Iframe load timeout, showing direct link');
-                        this.showDirectLinkScreen(session, false);
-                    }, 8000);
+                        this.showFileNotFoundScreen(session);
+                    }, chatConfig.settings.iframeTimeout);
                     
                     iframe.onload = () => {
                         clearTimeout(loadTimeout);
                         console.log('Iframe loaded successfully');
-                        
-                        // Try to inject mobile-friendly styles into the iframe
-                        try {
-                            this.injectMobileStyles(iframe);
-                        } catch (e) {
-                            console.log('Could not inject mobile styles (CORS):', e);
-                        }
                     };
                     
                     iframe.onerror = () => {
                         clearTimeout(loadTimeout);
-                        console.log('Iframe failed to load, showing direct link');
-                        this.showDirectLinkScreen(session, false);
+                        this.showFileNotFoundScreen(session);
                     };
                     
-                    iframeWrapper.appendChild(iframe);
-                    chatViewer.appendChild(iframeWrapper);
+                    chatViewer.appendChild(iframe);
                     
                 } catch (error) {
                     console.error('Error loading session:', error);
                     this.showErrorScreen(`Failed to load ${session.filename}: ${error.message}`);
                 }
             }
-
-            injectMobileStyles(iframe) {
-                try {
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    
-                    // Check if we can access the iframe content
-                    if (!iframeDoc) return;
-                    
-                    // Create mobile-friendly styles
-                    const style = iframeDoc.createElement('style');
-                    style.textContent = `
-                        @media (max-width: 768px) {
-                            body { 
-                                font-size: 12px !important; 
-                                line-height: 1.4 !important;
-                                padding: 10px !important;
-                            }
-                            * { 
-                                max-width: 100% !important; 
-                                word-wrap: break-word !important;
-                                overflow-wrap: break-word !important;
-                            }
-                            pre, code { 
-                                font-size: 10px !important; 
-                                white-space: pre-wrap !important;
-                            }
-                            .message, .chat-message, .conversation-turn {
-                                margin: 8px 0 !important;
-                                padding: 8px !important;
-                                font-size: 12px !important;
-                            }
-                            h1, h2, h3, h4, h5, h6 {
-                                font-size: 14px !important;
-                                margin: 10px 0 !important;
-                            }
-                        }
-                    `;
-                    
-                    iframeDoc.head.appendChild(style);
-                } catch (e) {
-                    // CORS restriction - can't access iframe content
-                    console.log('Cannot inject styles due to CORS policy');
-                }
-            }
         }
 
-        // Initialize the navigator when the page loads
+        // Initialize and make globally available
         document.addEventListener('DOMContentLoaded', () => {
-            new ChatNavigator();
+            window.chatNavigator = new ChatNavigator();
         });
     </script>
 </body>
