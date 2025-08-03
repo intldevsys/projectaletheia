@@ -46,35 +46,8 @@
             font-size: 18px;
         }
 
-        .category {
-            margin-bottom: 10px;
-        }
-
-        .category-header {
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid #444;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background 0.2s ease;
-        }
-
-        .category-header:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .category-icon {
-            font-size: 16px;
-        }
-
-        .category-sessions {
-            background: #2a2a2a;
-        }
-
         .session-item {
-            padding: 12px 20px 12px 40px;
+            padding: 15px 20px;
             border-bottom: 1px solid #333;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -101,11 +74,6 @@
             opacity: 0.7;
         }
 
-        .session-participants {
-            font-size: 10px;
-            opacity: 0.6;
-            margin-top: 2px;
-        }
 
         /* Main Content */
         .main-content {
@@ -238,8 +206,8 @@
             <div class="sidebar-header">
                 Chat Sessions Navigator
             </div>
-            <div id="categoriesContainer">
-                <!-- Categories will be populated by JavaScript -->
+            <div id="sessionsContainer">
+                <!-- Sessions will be populated by JavaScript -->
             </div>
         </div>
 
@@ -280,7 +248,7 @@
 
             init() {
                 this.setupEventListeners();
-                this.renderCategories();
+                this.renderSessions();
                 this.updateSidebarState();
                 this.handleHashChange();
                 
@@ -338,54 +306,23 @@
                 }
             }
 
-            renderCategories() {
-                const container = document.getElementById('categoriesContainer');
-                const categories = chatConfig.categories;
+            renderSessions() {
+                const container = document.getElementById('sessionsContainer');
                 const sessions = chatConfig.sessions;
-
-                // Group sessions by category
-                const sessionsByCategory = {};
-                sessions.forEach(session => {
-                    if (!sessionsByCategory[session.category]) {
-                        sessionsByCategory[session.category] = [];
-                    }
-                    sessionsByCategory[session.category].push(session);
-                });
 
                 container.innerHTML = '';
 
-                Object.entries(categories).forEach(([categoryName, categoryData]) => {
-                    const categoryDiv = document.createElement('div');
-                    categoryDiv.className = 'category';
-                    
-                    const categoryHeader = document.createElement('div');
-                    categoryHeader.className = 'category-header';
-                    categoryHeader.innerHTML = `
-                        <span class="category-icon">${categoryData.icon}</span>
-                        <span>${categoryName}</span>
+                sessions.forEach(session => {
+                    const sessionDiv = document.createElement('div');
+                    sessionDiv.className = 'session-item';
+                    sessionDiv.dataset.sessionId = session.id;
+                    sessionDiv.innerHTML = `
+                        <div class="session-title">${session.title}</div>
+                        <div class="session-meta">${session.date} • ${session.estimatedMessages || '?'} messages</div>
                     `;
                     
-                    const sessionsContainer = document.createElement('div');
-                    sessionsContainer.className = 'category-sessions';
-                    
-                    const categorySessions = sessionsByCategory[categoryName] || [];
-                    categorySessions.forEach(session => {
-                        const sessionDiv = document.createElement('div');
-                        sessionDiv.className = 'session-item';
-                        sessionDiv.dataset.sessionId = session.id;
-                        sessionDiv.innerHTML = `
-                            <div class="session-title">${session.title}</div>
-                            <div class="session-meta">${session.date} • ${session.estimatedMessages || '?'} messages</div>
-                            <div class="session-participants">Participants: ${session.participants.join(', ')}</div>
-                        `;
-                        
-                        sessionDiv.addEventListener('click', () => this.loadSession(session));
-                        sessionsContainer.appendChild(sessionDiv);
-                    });
-                    
-                    categoryDiv.appendChild(categoryHeader);
-                    categoryDiv.appendChild(sessionsContainer);
-                    container.appendChild(categoryDiv);
+                    sessionDiv.addEventListener('click', () => this.loadSession(session));
+                    container.appendChild(sessionDiv);
                 });
             }
 
@@ -429,7 +366,7 @@
 
             updateBreadcrumb(session) {
                 const breadcrumb = document.getElementById('breadcrumb');
-                breadcrumb.textContent = `${session.category} > ${session.title}`;
+                breadcrumb.textContent = session.title;
             }
 
             showLoadingScreen() {
