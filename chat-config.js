@@ -1,7 +1,3 @@
-/**
- * Chat Sessions Configuration - Updated to match actual files
- * Based on your chats/ directory contents
- */
 
 const chatConfig = {
     settings: {
@@ -104,18 +100,9 @@ const ChatConfigHelpers = {
     },
 
     validateFileNames() {
-        console.log('Expected files in chats/ directory:');
-        chatConfig.sessions.forEach(session => {
-            console.log(`- ${session.filename}`);
-        });
     }
 };
 
 // Export for browser
 window.chatConfig = chatConfig;
 window.ChatConfigHelpers = ChatConfigHelpers;
-
-// Auto-run validation in console
-//console.log('Chat Navigator Config Loaded');
-//console.log(`Found ${chatConfig.sessions.length} sessions configured`);
-//ChatConfigHelpers.validateFileNames();
