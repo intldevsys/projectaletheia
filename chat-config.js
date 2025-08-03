@@ -16,7 +16,7 @@ const chatConfig = {
         {
             id: "aletheia-development",
             title: "Complete Aletheia Project Development Chat",
-            filename: "aletheia-development.html", // ✓ Matches your file
+            filename: "aletheia-dev.html", // ✓ Matches your file
             date: "2025-08-03",
             estimatedMessages: 100,
             description: "Complete development discussion for the Aletheia truth verification system"
