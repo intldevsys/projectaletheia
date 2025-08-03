@@ -247,6 +247,18 @@
             }
 
             init() {
+                console.log('Initializing ChatNavigator...');
+                
+                // Check if chatConfig is loaded
+                if (typeof chatConfig === 'undefined') {
+                    console.error('chatConfig is not defined. Check if chat-config.js is loaded properly.');
+                    document.getElementById('sessionsContainer').innerHTML = 
+                        '<div style="padding: 20px; color: #ff6b6b; text-align: center;">Error: Configuration not loaded</div>';
+                    return;
+                }
+                
+                console.log('chatConfig loaded successfully:', chatConfig);
+                
                 this.setupEventListeners();
                 this.renderSessions();
                 this.updateSidebarState();
@@ -307,12 +319,20 @@
             }
 
             renderSessions() {
+                console.log('Rendering sessions...');
                 const container = document.getElementById('sessionsContainer');
                 const sessions = chatConfig.sessions;
 
+                console.log('Found', sessions.length, 'sessions');
                 container.innerHTML = '';
 
-                sessions.forEach(session => {
+                if (sessions.length === 0) {
+                    container.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">No sessions found</div>';
+                    return;
+                }
+
+                sessions.forEach((session, index) => {
+                    console.log(`Rendering session ${index + 1}:`, session.title);
                     const sessionDiv = document.createElement('div');
                     sessionDiv.className = 'session-item';
                     sessionDiv.dataset.sessionId = session.id;
@@ -324,6 +344,8 @@
                     sessionDiv.addEventListener('click', () => this.loadSession(session));
                     container.appendChild(sessionDiv);
                 });
+                
+                console.log('Finished rendering sessions');
             }
 
             handleHashChange() {
@@ -395,35 +417,75 @@
                 console.log('Loading session:', session.filename);
                 
                 try {
-                    // For local file access, we'll create a link that opens in the same window
                     const sessionUrl = `chats/${session.filename}`;
                     
-                    // Create a message telling user to navigate manually
+                    // First, try to check if the file exists
+                    try {
+                        const response = await fetch(sessionUrl, { method: 'HEAD' });
+                        if (!response.ok) {
+                            throw new Error(`File not found: ${response.status}`);
+                        }
+                    } catch (fetchError) {
+                        console.warn('Could not verify file existence:', fetchError);
+                        // Continue anyway - might be a CORS issue
+                    }
+                    
+                    // Create iframe for better GitHub Pages compatibility
                     this.hideAllScreens();
                     const chatViewer = document.getElementById('chatViewer');
-                    chatViewer.innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px; color: #e0e0e0;">
-                            <h2>${session.title}</h2>
-                            <p style="margin: 20px 0; color: #999;">Click the button below to open this chat session:</p>
-                            <a href="${sessionUrl}" 
-                               style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                      color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; 
-                                      font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 14px;
-                                      transition: all 0.3s ease;"
-                               onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.4)';"
-                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.3)';">
-                                Open ${session.title}
-                            </a>
-                            <p style="margin-top: 20px; font-size: 12px; color: #666;">
-                                The session will open in the same window. Use your browser's back button to return to this navigator.
-                            </p>
-                        </div>
-                    `;
+                    
+                    // Try iframe first
+                    const iframe = document.createElement('iframe');
+                    iframe.style.width = '100%';
+                    iframe.style.height = '80vh';
+                    iframe.style.border = 'none';
+                    iframe.style.borderRadius = '8px';
+                    iframe.src = sessionUrl;
+                    
+                    let loadTimeout = setTimeout(() => {
+                        console.log('Iframe load timeout, falling back to direct link');
+                        this.showDirectLink(session, chatViewer);
+                    }, 5000);
+                    
+                    iframe.onload = () => {
+                        clearTimeout(loadTimeout);
+                        console.log('Iframe loaded successfully');
+                    };
+                    
+                    iframe.onerror = () => {
+                        clearTimeout(loadTimeout);
+                        console.log('Iframe failed, showing direct link');
+                        this.showDirectLink(session, chatViewer);
+                    };
+                    
+                    chatViewer.appendChild(iframe);
                     
                 } catch (error) {
-                    console.error('Error creating session link:', error);
-                    this.showErrorScreen(`Failed to create link for ${session.filename}`);
+                    console.error('Error loading session:', error);
+                    this.showErrorScreen(`Failed to load ${session.filename}: ${error.message}`);
                 }
+            }
+            
+            showDirectLink(session, container) {
+                const sessionUrl = `chats/${session.filename}`;
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: #e0e0e0;">
+                        <h2>${session.title}</h2>
+                        <p style="margin: 20px 0; color: #999;">Click the button below to open this chat session:</p>
+                        <a href="${sessionUrl}" 
+                           style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                  color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; 
+                                  font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 14px;
+                                  transition: all 0.3s ease;"
+                           onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.4)';"
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.3)';">
+                            Open ${session.title}
+                        </a>
+                        <p style="margin-top: 20px; font-size: 12px; color: #666;">
+                            The session will open in the same window. Use your browser's back button to return to this navigator.
+                        </p>
+                    </div>
+                `;
             }
 
         }
