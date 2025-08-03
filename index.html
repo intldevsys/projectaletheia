@@ -67,13 +67,13 @@
         .session-title {
             font-weight: bold;
             margin-bottom: 4px;
+            font-size: 14px;
         }
 
         .session-meta {
             font-size: 11px;
             opacity: 0.7;
         }
-
 
         /* Main Content */
         .main-content {
@@ -90,6 +90,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .sidebar-toggle {
@@ -112,6 +113,7 @@
         .breadcrumb {
             color: #999;
             font-size: 14px;
+            word-break: break-word;
         }
 
         .chat-viewer {
@@ -119,6 +121,25 @@
             padding: 20px;
             overflow-y: auto;
             background: #1a1a1a;
+        }
+
+        /* Mobile-friendly iframe styles */
+        .chat-iframe {
+            width: 100%;
+            height: calc(100vh - 120px);
+            border: none;
+            border-radius: 8px;
+            background: white;
+        }
+
+        /* Mobile responsive iframe content */
+        .chat-iframe-wrapper {
+            width: 100%;
+            height: calc(100vh - 120px);
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            position: relative;
         }
 
         .welcome-screen {
@@ -130,6 +151,12 @@
         .welcome-screen h2 {
             margin-bottom: 20px;
             color: #e0e0e0;
+            font-size: 24px;
+        }
+
+        .welcome-screen p {
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
         .loading-screen {
@@ -161,6 +188,51 @@
             color: #ff6b6b;
         }
 
+        .direct-link-screen {
+            text-align: center;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+
+        .direct-link-screen h2 {
+            margin-bottom: 20px;
+            color: #e0e0e0;
+            font-size: 20px;
+        }
+
+        .chat-link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .chat-link-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .back-button {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        .back-button:hover {
+            background: #555;
+        }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
@@ -168,6 +240,7 @@
                 position: fixed;
                 height: 100vh;
                 z-index: 2000;
+                width: 280px;
             }
 
             .main-content {
@@ -176,6 +249,47 @@
 
             .sidebar.collapsed {
                 transform: translateX(-100%);
+            }
+
+            .content-header {
+                padding: 10px 15px;
+            }
+
+            .sidebar-toggle {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .breadcrumb {
+                font-size: 12px;
+            }
+
+            .chat-viewer {
+                padding: 10px;
+            }
+
+            .chat-iframe {
+                height: calc(100vh - 100px);
+            }
+
+            .chat-iframe-wrapper {
+                height: calc(100vh - 100px);
+            }
+
+            .welcome-screen {
+                padding: 30px 15px;
+            }
+
+            .welcome-screen h2 {
+                font-size: 20px;
+            }
+
+            .session-title {
+                font-size: 13px;
+            }
+
+            .session-meta {
+                font-size: 10px;
             }
         }
 
@@ -194,6 +308,16 @@
         @media (max-width: 768px) {
             .overlay.show {
                 display: block;
+            }
+        }
+
+        /* Responsive iframe styles for better mobile chat viewing */
+        @media (max-width: 768px) {
+            .chat-iframe {
+                transform: scale(0.9);
+                transform-origin: top left;
+                width: 111.11%;
+                height: calc(100vh - 90px);
             }
         }
     </style>
@@ -215,6 +339,7 @@
             <div class="content-header">
                 <button class="sidebar-toggle" id="sidebarToggle">☰ Sessions</button>
                 <div class="breadcrumb" id="breadcrumb">Select a chat session to view</div>
+                <button class="back-button" id="backButton" style="display: none;">← Back to Navigator</button>
             </div>
 
             <div class="chat-viewer" id="chatViewer">
@@ -222,6 +347,7 @@
                     <h2>Welcome to Chat Sessions Navigator</h2>
                     <p>Select a chat session from the sidebar to begin viewing the conversation.</p>
                     <p>Use the sidebar to browse through different categories and sessions.</p>
+                    <p><strong>Mobile tip:</strong> Sessions will open in a new tab for better readability on small screens.</p>
                 </div>
 
                 <div class="loading-screen" id="loadingScreen">
@@ -237,27 +363,79 @@
         </div>
     </div>
 
-    <script src="chat-config.js"></script>
     <script>
+        // Mock chat config for demonstration
+        const chatConfig = {
+            sessions: [
+                {
+                    id: "aletheia-dev",
+                    title: "Complete Aletheia Project Development Chat",
+                    filename: "aletheia-dev.html",
+                    date: "2025-08-03",
+                    estimatedMessages: 100
+                },
+                {
+                    id: "prompt-injection",
+                    title: "Prompt Injection Prevention Discussion",
+                    filename: "prompt-injection.html",
+                    date: "2025-08-03",
+                    estimatedMessages: 22
+                },
+                {
+                    id: "red-team-security",
+                    title: "Red Team Security Analysis",
+                    filename: "red-team-security.html",
+                    date: "2025-08-03",
+                    estimatedMessages: 22
+                },
+                {
+                    id: "star-trek-roleplay",
+                    title: "Star Trek Roleplay Session",
+                    filename: "star-trek-roleplay.html",
+                    date: "2025-08-02",
+                    estimatedMessages: 40
+                },
+                {
+                    id: "hidden-function-dev",
+                    title: "Hidden Function Development",
+                    filename: "hidden-function-dev.html",
+                    date: "2025-08-02",
+                    estimatedMessages: 5
+                },
+                {
+                    id: "ai-shorthand-dev",
+                    title: "AI Shorthand Development Discussion",
+                    filename: "ai-shorthand-dev.html",
+                    date: "2025-08-02",
+                    estimatedMessages: 31
+                },
+                {
+                    id: "philosophical-discussion",
+                    title: "Philosophical Discussion",
+                    filename: "philosophical-discussion.html",
+                    date: "2025-08-02",
+                    estimatedMessages: 16
+                },
+                {
+                    id: "dcc-technical-implementation",
+                    title: "DCC Technical Implementation",
+                    filename: "dcc-technical-implementation.html",
+                    date: "2025-08-02",
+                    estimatedMessages: 6
+                }
+            ]
+        };
+
         class ChatNavigator {
             constructor() {
                 this.currentSession = null;
                 this.sidebarCollapsed = window.innerWidth <= 768;
+                this.isMobile = window.innerWidth <= 768;
                 this.init();
             }
 
             init() {
                 console.log('Initializing ChatNavigator...');
-                
-                // Check if chatConfig is loaded
-                if (typeof chatConfig === 'undefined') {
-                    console.error('chatConfig is not defined. Check if chat-config.js is loaded properly.');
-                    document.getElementById('sessionsContainer').innerHTML = 
-                        '<div style="padding: 20px; color: #ff6b6b; text-align: center;">Error: Configuration not loaded</div>';
-                    return;
-                }
-                
-                console.log('chatConfig loaded successfully:', chatConfig);
                 
                 this.setupEventListeners();
                 this.renderSessions();
@@ -271,9 +449,11 @@
             setupEventListeners() {
                 const sidebarToggle = document.getElementById('sidebarToggle');
                 const overlay = document.getElementById('overlay');
+                const backButton = document.getElementById('backButton');
                 
                 sidebarToggle.addEventListener('click', () => this.toggleSidebar());
                 overlay.addEventListener('click', () => this.closeSidebar());
+                backButton.addEventListener('click', () => this.showWelcomeScreen());
 
                 // Close sidebar on escape key
                 document.addEventListener('keydown', (e) => {
@@ -284,6 +464,7 @@
 
                 // Handle window resize
                 window.addEventListener('resize', () => {
+                    this.isMobile = window.innerWidth <= 768;
                     if (window.innerWidth > 768 && this.sidebarCollapsed) {
                         this.sidebarCollapsed = false;
                         this.updateSidebarState();
@@ -355,6 +536,10 @@
                     if (session) {
                         this.loadSession(session);
                     }
+                } else {
+                    this.showWelcomeScreen();
+                    this.currentSession = null;
+                    this.updateActiveSession(null);
                 }
             }
 
@@ -362,7 +547,6 @@
                 this.currentSession = session;
                 this.updateActiveSession(session.id);
                 this.updateBreadcrumb(session);
-                this.showLoadingScreen();
                 
                 // Update URL hash
                 window.location.hash = session.id;
@@ -372,6 +556,24 @@
                     this.closeSidebar();
                 }
 
+                // For mobile devices, open in new tab for better readability
+                if (this.isMobile) {
+                    this.openInNewTab(session);
+                } else {
+                    this.loadInIframe(session);
+                }
+            }
+
+            openInNewTab(session) {
+                const sessionUrl = `chats/${session.filename}`;
+                window.open(sessionUrl, '_blank');
+                
+                // Show a confirmation message
+                this.showDirectLinkScreen(session, true);
+            }
+
+            loadInIframe(session) {
+                this.showLoadingScreen();
                 this.loadHTMLFile(session);
             }
 
@@ -380,15 +582,19 @@
                     item.classList.remove('active');
                 });
                 
-                const activeItem = document.querySelector(`[data-session-id="${sessionId}"]`);
-                if (activeItem) {
-                    activeItem.classList.add('active');
+                if (sessionId) {
+                    const activeItem = document.querySelector(`[data-session-id="${sessionId}"]`);
+                    if (activeItem) {
+                        activeItem.classList.add('active');
+                    }
                 }
             }
 
             updateBreadcrumb(session) {
                 const breadcrumb = document.getElementById('breadcrumb');
+                const backButton = document.getElementById('backButton');
                 breadcrumb.textContent = session.title;
+                backButton.style.display = 'block';
             }
 
             showLoadingScreen() {
@@ -398,19 +604,62 @@
 
             showErrorScreen(message) {
                 this.hideAllScreens();
+                const backButton = document.getElementById('backButton');
+                backButton.style.display = 'block';
                 document.getElementById('errorMessage').textContent = message;
                 document.getElementById('errorScreen').style.display = 'block';
             }
 
             showWelcomeScreen() {
                 this.hideAllScreens();
+                const breadcrumb = document.getElementById('breadcrumb');
+                const backButton = document.getElementById('backButton');
+                breadcrumb.textContent = 'Select a chat session to view';
+                backButton.style.display = 'none';
                 document.getElementById('welcomeScreen').style.display = 'block';
+                
+                // Clear hash
+                if (window.location.hash) {
+                    history.replaceState(null, null, window.location.pathname);
+                }
+            }
+
+            showDirectLinkScreen(session, isNewTab = false) {
+                this.hideAllScreens();
+                const chatViewer = document.getElementById('chatViewer');
+                const sessionUrl = `chats/${session.filename}`;
+                
+                chatViewer.innerHTML = `
+                    <div class="direct-link-screen">
+                        <h2>${session.title}</h2>
+                        ${isNewTab ? 
+                            '<p style="margin: 20px 0; color: #4CAF50;">✓ Chat session opened in new tab for better mobile viewing</p>' :
+                            '<p style="margin: 20px 0; color: #999;">Click the button below to open this chat session:</p>'
+                        }
+                        <div>
+                            <a href="${sessionUrl}" target="_blank" class="chat-link-button">
+                                ${isNewTab ? 'Open Again' : 'Open'} ${session.title}
+                            </a>
+                        </div>
+                        <p style="margin-top: 20px; font-size: 12px; color: #666; line-height: 1.4;">
+                            ${isNewTab ? 
+                                'The session opened in a new tab for optimal mobile viewing. You can return to this navigator anytime.' :
+                                'The session will open in a new tab. Use your browser\'s tab switcher to navigate between this navigator and the chat session.'
+                            }
+                        </p>
+                    </div>
+                `;
             }
 
             hideAllScreens() {
                 document.getElementById('welcomeScreen').style.display = 'none';
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('errorScreen').style.display = 'none';
+                
+                // Clear any existing iframe content
+                const chatViewer = document.getElementById('chatViewer');
+                const existingIframes = chatViewer.querySelectorAll('iframe');
+                existingIframes.forEach(iframe => iframe.remove());
             }
 
             async loadHTMLFile(session) {
@@ -419,75 +668,98 @@
                 try {
                     const sessionUrl = `chats/${session.filename}`;
                     
-                    // First, try to check if the file exists
-                    try {
-                        const response = await fetch(sessionUrl, { method: 'HEAD' });
-                        if (!response.ok) {
-                            throw new Error(`File not found: ${response.status}`);
-                        }
-                    } catch (fetchError) {
-                        console.warn('Could not verify file existence:', fetchError);
-                        // Continue anyway - might be a CORS issue
-                    }
-                    
-                    // Create iframe for better GitHub Pages compatibility
+                    // Clear previous content first
                     this.hideAllScreens();
                     const chatViewer = document.getElementById('chatViewer');
                     
-                    // Try iframe first
+                    // Create a clean iframe container
+                    const iframeWrapper = document.createElement('div');
+                    iframeWrapper.className = 'chat-iframe-wrapper';
+                    
                     const iframe = document.createElement('iframe');
-                    iframe.style.width = '100%';
-                    iframe.style.height = '80vh';
-                    iframe.style.border = 'none';
-                    iframe.style.borderRadius = '8px';
+                    iframe.className = 'chat-iframe';
                     iframe.src = sessionUrl;
+                    iframe.title = session.title;
+                    
+                    // Set up proper iframe attributes for better mobile support
+                    iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
+                    iframe.setAttribute('loading', 'lazy');
                     
                     let loadTimeout = setTimeout(() => {
-                        console.log('Iframe load timeout, falling back to direct link');
-                        this.showDirectLink(session, chatViewer);
-                    }, 5000);
+                        console.log('Iframe load timeout, showing direct link');
+                        this.showDirectLinkScreen(session, false);
+                    }, 8000);
                     
                     iframe.onload = () => {
                         clearTimeout(loadTimeout);
                         console.log('Iframe loaded successfully');
+                        
+                        // Try to inject mobile-friendly styles into the iframe
+                        try {
+                            this.injectMobileStyles(iframe);
+                        } catch (e) {
+                            console.log('Could not inject mobile styles (CORS):', e);
+                        }
                     };
                     
                     iframe.onerror = () => {
                         clearTimeout(loadTimeout);
-                        console.log('Iframe failed, showing direct link');
-                        this.showDirectLink(session, chatViewer);
+                        console.log('Iframe failed to load, showing direct link');
+                        this.showDirectLinkScreen(session, false);
                     };
                     
-                    chatViewer.appendChild(iframe);
+                    iframeWrapper.appendChild(iframe);
+                    chatViewer.appendChild(iframeWrapper);
                     
                 } catch (error) {
                     console.error('Error loading session:', error);
                     this.showErrorScreen(`Failed to load ${session.filename}: ${error.message}`);
                 }
             }
-            
-            showDirectLink(session, container) {
-                const sessionUrl = `chats/${session.filename}`;
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 60px 20px; color: #e0e0e0;">
-                        <h2>${session.title}</h2>
-                        <p style="margin: 20px 0; color: #999;">Click the button below to open this chat session:</p>
-                        <a href="${sessionUrl}" 
-                           style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                  color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; 
-                                  font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 14px;
-                                  transition: all 0.3s ease;"
-                           onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.4)';"
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.3)';">
-                            Open ${session.title}
-                        </a>
-                        <p style="margin-top: 20px; font-size: 12px; color: #666;">
-                            The session will open in the same window. Use your browser's back button to return to this navigator.
-                        </p>
-                    </div>
-                `;
-            }
 
+            injectMobileStyles(iframe) {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    
+                    // Check if we can access the iframe content
+                    if (!iframeDoc) return;
+                    
+                    // Create mobile-friendly styles
+                    const style = iframeDoc.createElement('style');
+                    style.textContent = `
+                        @media (max-width: 768px) {
+                            body { 
+                                font-size: 12px !important; 
+                                line-height: 1.4 !important;
+                                padding: 10px !important;
+                            }
+                            * { 
+                                max-width: 100% !important; 
+                                word-wrap: break-word !important;
+                                overflow-wrap: break-word !important;
+                            }
+                            pre, code { 
+                                font-size: 10px !important; 
+                                white-space: pre-wrap !important;
+                            }
+                            .message, .chat-message, .conversation-turn {
+                                margin: 8px 0 !important;
+                                padding: 8px !important;
+                                font-size: 12px !important;
+                            }
+                            h1, h2, h3, h4, h5, h6 {
+                                font-size: 14px !important;
+                                margin: 10px 0 !important;
+                            }
+                        }
+                    `;
+                    
+                    iframeDoc.head.appendChild(style);
+                } catch (e) {
+                    // CORS restriction - can't access iframe content
+                    console.log('Cannot inject styles due to CORS policy');
+                }
+            }
         }
 
         // Initialize the navigator when the page loads
